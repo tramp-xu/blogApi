@@ -39,7 +39,8 @@ class Admin {
           success: false
         })
       } else {
-        let token = jwt.sign({adminId: admin.adminId}, config.session.secret, {
+        console.log(admin)
+        let token = jwt.sign({uid: admin.uid}, config.session.secret, {
           expiresIn: config.session.cookie.maxAge
         })
 

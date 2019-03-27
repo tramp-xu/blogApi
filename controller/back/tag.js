@@ -10,9 +10,14 @@ class Tag {
   }
 
   async search (req, res, next) {
-    let {pageSize = 10, curPage = 1} = req.query
+    let {pageSize, curPage} = req.query
     try {
-      let allTag = await TagModel.find({}).sort({}).skip(Number(curPage - 1) * pageSize).limit(Number(pageSize))
+      let allTag = []
+      if (!pageSize && !curPage) {
+        allTag = await TagModel.find({}).sort({})
+      } else {
+        allTag = await TagModel.find({}).sort({}).skip(Number(curPage - 1) * pageSize).limit(Number(pageSize))
+      }
       const count = await TagModel.count()
       if (curPage > 1 && !allTag.length) {
         allTag = await TagModel.find({}).sort({}).skip(Number(curPage - 2) * pageSize).limit(Number(pageSize))
@@ -103,9 +108,6 @@ class Tag {
 
   async edit (req, res, next) {
     const {_id, ...row} = req.body
-    console.log(_id)
-    console.log(req.body)
-    console.log(row)
     try {
       let tag = await TagModel.findOneAndUpdate({_id}, {$set: row})
       if (tag) {
